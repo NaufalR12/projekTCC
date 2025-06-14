@@ -218,6 +218,102 @@ const FinancialDetail = () => {
     }
   };
 
+  const handlePrint = () => {
+    const printWindow = window.open("", "_blank");
+    const periodText =
+      timeFilter === "day"
+        ? "Harian"
+        : timeFilter === "month"
+        ? "Bulanan"
+        : "Tahunan";
+    const dateText = new Date(selectedDate).toLocaleDateString("id-ID", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+
+    const printContent = `
+      <html>
+        <head>
+          <title>Rekening Koran - ${periodText}</title>
+          <style>
+            body { font-family: Arial, sans-serif; padding: 20px; }
+            .header { text-align: center; margin-bottom: 20px; }
+            .summary { margin-bottom: 20px; }
+            .summary-item { margin: 5px 0; }
+            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+            th { background-color: #f5f5f5; }
+            .income { color: green; }
+            .expense { color: red; }
+            @media print {
+              .no-print { display: none; }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <h1>Rekening Koran ${periodText}</h1>
+            <p>Periode: ${dateText}</p>
+          </div>
+          
+          <div class="summary">
+            <h2>Ringkasan</h2>
+            <div class="summary-item">Total Pemasukan: Rp ${summary.totalIncome.toLocaleString(
+              "id-ID"
+            )}</div>
+            <div class="summary-item">Total Pengeluaran: Rp ${summary.totalExpense.toLocaleString(
+              "id-ID"
+            )}</div>
+            <div class="summary-item">Saldo: Rp ${summary.totalBalance.toLocaleString(
+              "id-ID"
+            )}</div>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Tanggal</th>
+                <th>Jenis</th>
+                <th>Kategori</th>
+                <th>Deskripsi</th>
+                <th>Jumlah</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${filteredTransactions
+                .map(
+                  (transaction) => `
+                <tr>
+                  <td>${new Date(transaction.date).toLocaleDateString(
+                    "id-ID"
+                  )}</td>
+                  <td class="${transaction.type}">${
+                    transaction.type === "income" ? "Pemasukan" : "Pengeluaran"
+                  }</td>
+                  <td>${transaction.categoryName || "Tanpa Kategori"}</td>
+                  <td>${transaction.description || "-"}</td>
+                  <td class="${transaction.type}">Rp ${Number(
+                    transaction.amount
+                  ).toLocaleString("id-ID")}</td>
+                </tr>
+              `
+                )
+                .join("")}
+            </tbody>
+          </table>
+
+          <div class="no-print" style="margin-top: 20px; text-align: center;">
+            <button onclick="window.print()">Cetak</button>
+          </div>
+        </body>
+      </html>
+    `;
+
+    printWindow.document.write(printContent);
+    printWindow.document.close();
+  };
+
   return (
     <div className="main-layout">
       <Sidebar />
@@ -264,30 +360,48 @@ const FinancialDetail = () => {
                   />
                 </div>
               </div>
-              <div className="type-filter">
+              <hr className="filter-divider" />
+              <div
+                className="type-filter-row"
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginTop: "1rem",
+                }}
+              >
+                <div className="type-filter" style={{ margin: 0 }}>
+                  <button
+                    className={`filter-btn ${
+                      typeFilter === "all" ? "active" : ""
+                    }`}
+                    onClick={() => setTypeFilter("all")}
+                  >
+                    Semua
+                  </button>
+                  <button
+                    className={`filter-btn ${
+                      typeFilter === "income" ? "active" : ""
+                    }`}
+                    onClick={() => setTypeFilter("income")}
+                  >
+                    Pemasukan
+                  </button>
+                  <button
+                    className={`filter-btn ${
+                      typeFilter === "expense" ? "active" : ""
+                    }`}
+                    onClick={() => setTypeFilter("expense")}
+                  >
+                    Pengeluaran
+                  </button>
+                </div>
                 <button
-                  className={`filter-btn ${
-                    typeFilter === "all" ? "active" : ""
-                  }`}
-                  onClick={() => setTypeFilter("all")}
+                  className="filter-btn print-btn-custom"
+                  onClick={handlePrint}
+                  style={{ marginLeft: "auto", minWidth: 180 }}
                 >
-                  Semua
-                </button>
-                <button
-                  className={`filter-btn ${
-                    typeFilter === "income" ? "active" : ""
-                  }`}
-                  onClick={() => setTypeFilter("income")}
-                >
-                  Pemasukan
-                </button>
-                <button
-                  className={`filter-btn ${
-                    typeFilter === "expense" ? "active" : ""
-                  }`}
-                  onClick={() => setTypeFilter("expense")}
-                >
-                  Pengeluaran
+                  Cetak Rekening Koran
                 </button>
               </div>
             </div>
