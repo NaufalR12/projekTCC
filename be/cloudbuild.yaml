@@ -8,7 +8,7 @@ steps:
   - name: "gcr.io/cloud-builders/docker"
     args: ["push", "gcr.io/$PROJECT_ID/projek-akhir"]
 
-  # Step 3: Deploy ke Cloud Run menggunakan env.yaml
+  # Step 3: Deploy ke Cloud Run
   - name: "gcr.io/cloud-builders/gcloud"
     args:
       [
@@ -23,7 +23,7 @@ steps:
         "5000",
         "--region",
         "us-central1",
-        "--allow-unauthenticated",
+        "--no-allow-unauthenticated",
         "--set-env-vars",
         "ACCESS_TOKEN_SECRET=${_ACCESS_TOKEN_SECRET},REFRESH_TOKEN_SECRET=${_REFRESH_TOKEN_SECRET},DB_HOST=${_DB_HOST},DB_NAME=${_DB_NAME},DB_USERNAME=${_DB_USERNAME},PG_DB_HOST=${_PG_DB_HOST},PG_DB_NAME=${_PG_DB_NAME},PG_DB_USERNAME=${_PG_DB_USERNAME},DB_PASSWORD=${_DB_PASSWORD},PG_DB_PASSWORD=${_PG_DB_PASSWORD}",
       ]
