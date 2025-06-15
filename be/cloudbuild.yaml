@@ -28,5 +28,18 @@ steps:
         "ACCESS_TOKEN_SECRET=${_ACCESS_TOKEN_SECRET},REFRESH_TOKEN_SECRET=${_REFRESH_TOKEN_SECRET},DB_HOST=${_DB_HOST},DB_NAME=${_DB_NAME},DB_USERNAME=${_DB_USERNAME},PG_DB_HOST=${_PG_DB_HOST},PG_DB_NAME=${_PG_DB_NAME},PG_DB_USERNAME=${_PG_DB_USERNAME},DB_PASSWORD=${_DB_PASSWORD},PG_DB_PASSWORD=${_PG_DB_PASSWORD}",
       ]
 
+  # Step 4: Set IAM policy untuk mengizinkan akses publik
+  - name: "gcr.io/cloud-builders/gcloud"
+    args:
+      [
+        "run",
+        "services",
+        "add-iam-policy-binding",
+        "projek-akhir",
+        "--region=us-central1",
+        "--member=allUsers",
+        "--role=roles/run.invoker",
+      ]
+
 options:
   logging: CLOUD_LOGGING_ONLY
