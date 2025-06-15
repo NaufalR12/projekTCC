@@ -2,7 +2,6 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
 import UserRoute from "./route/UserRoute.js";
@@ -14,18 +13,6 @@ import { syncPostgres } from "./config/postgres.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-// Load environment variables
-const envPath = path.resolve(__dirname, ".env");
-console.log("Loading .env from:", envPath);
-
-const result = dotenv.config({ path: envPath });
-if (result.error) {
-  console.error("Error loading .env file:", result.error);
-  process.exit(1);
-} else {
-  console.log(".env file loaded successfully");
-}
 
 // Verify required environment variables
 const requiredEnvVars = [
