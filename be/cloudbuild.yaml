@@ -1,13 +1,14 @@
-  # Step 2: Build Docker image
+steps:
+  # Step 1: Build Docker image
   - name: "gcr.io/cloud-builders/docker"
     args: ["build", "-t", "gcr.io/$PROJECT_ID/projek-akhir", "."]
     dir: "be"
 
-  # Step 3: Push image ke Artifact Registry
+  # Step 2: Push image ke Artifact Registry
   - name: "gcr.io/cloud-builders/docker"
     args: ["push", "gcr.io/$PROJECT_ID/projek-akhir"]
 
-  # Step 4: Deploy ke Cloud Run menggunakan env.yaml
+  # Step 3: Deploy ke Cloud Run menggunakan env.yaml
   - name: "gcr.io/cloud-builders/gcloud"
     args:
       [
@@ -19,10 +20,10 @@
         "--timeout",
         "360s",
         "--port",
-        "5001",
+        "5000",
         "--region",
         "us-central1",
-        "--allow-unauthenticated",
+        "--allow-unauthenticated"
       ]
 
 options:
