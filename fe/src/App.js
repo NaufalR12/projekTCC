@@ -45,8 +45,7 @@ function App() {
         console.log("Attempting to refresh access token...");
         const response = await axios.post(
           `${
-            process.env.REACT_APP_API_URL ||
-            "https://projek-akhir-505940949397.us-central1.run.app"
+            process.env.REACT_APP_API_URL || "http://localhost:5000"
           }/api/user/refresh-token`,
           { refreshToken: currentRefreshToken }
         );
@@ -93,10 +92,13 @@ function App() {
   }
 
   if (!isApiConnected) {
+    const expectedPort = process.env.REACT_APP_API_URL.split(':')[2] || 'unknown';
+    const currentPort = window.location.port || 'unknown';
+
     return (
       <div>
         Cannot connect to API. Please make sure the backend server is running on
-        port 5001.
+        port {expectedPort}. Currently running on port {currentPort}.
       </div>
     );
   }
