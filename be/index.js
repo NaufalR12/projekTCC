@@ -90,10 +90,7 @@ app.use((req, res, next) => {
 });
 
 // CORS configuration
-const allowedOrigins = [
-  "https://fe-projek-akhir-dot-b-08-450916.uc.r.appspot.com",
-  "http://localhost:3000",
-];
+const allowedOrigins = ["http://35.232.79.14", "http://localhost:3000"];
 
 app.use(cookieParser());
 app.use(
